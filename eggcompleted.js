@@ -171,7 +171,6 @@ function displaySelectedImage(imageSrc) {
 
 
 
-
 async function captureImage(videoElement, stream) {
     // Buat canvas untuk menangkap gambar dari video
     const canvas = document.createElement('canvas');
