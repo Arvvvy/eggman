@@ -65,62 +65,29 @@ function initializeButtons() {
 // Fungsi untuk membuka kamera dan mengambil foto
 // Fungsi untuk membuka kamera dan mengambil foto
 // Fungsi untuk membuka kamera perangkat dan mengambil foto
-let videoStream = null; // Stream video global
-let usingBackCamera = true; // Default: kamera belakang
+let videoStream = null; // Stream global untuk menyimpan state
+let usingBackCamera = true; // Kamera default: belakang
 
 // Fungsi utama untuk memulai kamera
 function takePhoto() {
     const container = document.querySelector('.image-container');
-    container.innerHTML = ''; // Bersihkan kontainer sebelum memulai kamera
+    resetContainer(container); // Reset DOM untuk mencegah elemen berlebih
 
     const videoElement = document.createElement('video');
     videoElement.setAttribute('autoplay', true);
-    videoElement.setAttribute('playsinline', true); // Agar kompatibel di mobile
+    videoElement.setAttribute('playsinline', true); // Mobile friendly
     videoElement.style.width = '100%';
     container.appendChild(videoElement);
 
-    // Tombol kontrol
-    const buttonsWrapper = document.createElement('div');
-    buttonsWrapper.style.display = 'flex';
-    buttonsWrapper.style.justifyContent = 'space-around';
-    buttonsWrapper.style.marginTop = '10px';
-
-    // Tombol Tangkap Gambar
-    const captureButton = createButton('Tangkap Gambar', 'capture-btn', () =>
-        captureImage(videoElement)
-    );
-    buttonsWrapper.appendChild(captureButton);
-
-    // Tombol Ganti Kamera
-    const switchButton = createButton('Ganti Kamera', 'switch-camera-btn', () =>
-        switchCamera(videoElement)
-    );
-    buttonsWrapper.appendChild(switchButton);
-
-    // Tombol Kembali
-    const backButton = createButton('Kembali', 'back-btn', () => {
-        stopVideoStream(); // Stop video
-        resetToEggAnimation(); // Kembali ke animasi awal
-    });
-    buttonsWrapper.appendChild(backButton);
-
+    const buttonsWrapper = createControlButtons(videoElement);
     container.appendChild(buttonsWrapper);
 
     startCamera(videoElement); // Mulai kamera
 }
 
-// Fungsi utilitas untuk membuat tombol
-function createButton(text, className, onClickHandler) {
-    const button = document.createElement('button');
-    button.textContent = text;
-    button.classList.add(className);
-    button.onclick = onClickHandler;
-    return button;
-}
-
 // Fungsi untuk memulai kamera
 async function startCamera(videoElement) {
-    stopVideoStream(); // Pastikan semua stream sebelumnya dihentikan
+    stopVideoStream(); // Hentikan stream sebelumnya
     try {
         videoStream = await navigator.mediaDevices.getUserMedia({
             video: { facingMode: usingBackCamera ? 'environment' : 'user' },
@@ -128,8 +95,8 @@ async function startCamera(videoElement) {
         videoElement.srcObject = videoStream;
         videoElement.onloadedmetadata = () => videoElement.play();
     } catch (error) {
-        console.error('Error starting camera:', error);
-        alert('Gagal mengakses kamera. Periksa izin atau perangkat.');
+        console.error('Gagal mengakses kamera:', error);
+        alert('Tidak dapat mengakses kamera. Periksa izin atau perangkat.');
     }
 }
 
@@ -142,40 +109,90 @@ function captureImage(videoElement) {
     const context = canvas.getContext('2d');
     context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
 
-    stopVideoStream(); // Pastikan kamera berhenti
-    displayCapturedImage(canvas.toDataURL('image/png')); // Tampilkan gambar hasil
+    stopVideoStream(); // Stop kamera
+    displayCapturedImage(canvas.toDataURL('image/png')); // Tampilkan hasil gambar
 }
 
-// Fungsi untuk menampilkan gambar hasil tangkapan
+// Fungsi untuk menampilkan hasil gambar
 function displayCapturedImage(imageSrc) {
     const container = document.querySelector('.image-container');
-    container.innerHTML = ''; // Reset tampilan
+    resetContainer(container); // Bersihkan tampilan
+
     const img = document.createElement('img');
     img.src = imageSrc;
     img.style.width = '100%';
     container.appendChild(img);
+
+    // Tombol kembali ke kamera
+    const backButton = createButton('Ambil Foto Lagi', () => takePhoto());
+    container.appendChild(backButton);
 }
 
 // Fungsi untuk mengganti kamera
 function switchCamera(videoElement) {
-    usingBackCamera = !usingBackCamera; // Ganti mode kamera
-    startCamera(videoElement); // Restart kamera
+    usingBackCamera = !usingBackCamera; // Toggle kamera depan/belakang
+    startCamera(videoElement); // Restart kamera dengan mode baru
 }
 
-// Fungsi untuk menghentikan stream kamera
+// Fungsi untuk menghentikan video stream
 function stopVideoStream() {
     if (videoStream) {
-        videoStream.getTracks().forEach((track) => track.stop()); // Stop semua stream
-        videoStream = null; // Reset stream
+        videoStream.getTracks().forEach((track) => track.stop()); // Hentikan stream
+        videoStream = null;
     }
 }
 
+// Fungsi untuk membuat kontrol tombol
+function createControlButtons(videoElement) {
+    const buttonsWrapper = document.createElement('div');
+    buttonsWrapper.style.display = 'flex';
+    buttonsWrapper.style.justifyContent = 'space-between';
+    buttonsWrapper.style.marginTop = '10px';
+
+    // Tombol Tangkap Gambar
+    const captureButton = createButton('Tangkap Gambar', () =>
+        captureImage(videoElement)
+    );
+    buttonsWrapper.appendChild(captureButton);
+
+    // Tombol Ganti Kamera
+    const switchButton = createButton('Ganti Kamera', () =>
+        switchCamera(videoElement)
+    );
+    buttonsWrapper.appendChild(switchButton);
+
+    // Tombol Kembali
+    const backButton = createButton('Kembali', () => {
+        stopVideoStream(); // Hentikan kamera
+        resetToDefault(); // Kembali ke tampilan awal
+    });
+    buttonsWrapper.appendChild(backButton);
+
+    return buttonsWrapper;
+}
+
+// Fungsi utilitas untuk membuat tombol
+function createButton(text, onClickHandler) {
+    const button = document.createElement('button');
+    button.textContent = text;
+    button.style.margin = '0 5px';
+    button.onclick = onClickHandler;
+    return button;
+}
+
+// Fungsi untuk reset container
+function resetContainer(container) {
+    stopVideoStream(); // Pastikan stream berhenti
+    container.innerHTML = ''; // Bersihkan semua elemen dalam container
+}
+
 // Fungsi untuk reset ke tampilan awal
-function resetToEggAnimation() {
+function resetToDefault() {
     const container = document.querySelector('.image-container');
-    container.innerHTML = ''; // Bersihkan kontainer
-    const button = createButton('Ambil Foto', 'start-btn', takePhoto);
-    container.appendChild(button);
+    resetContainer(container);
+
+    const startButton = createButton('Ambil Foto', () => takePhoto());
+    container.appendChild(startButton);
 }
 
 
