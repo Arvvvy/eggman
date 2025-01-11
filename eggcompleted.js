@@ -74,6 +74,9 @@ function takePhoto() {
     eggContainer.innerHTML = ''; // Kosongkan kontainer gambar
 
     const videoElement = document.createElement('video');
+    videoElement.setAttribute('autoplay', true);
+    videoElement.setAttribute('playsinline', true); // Untuk kompatibilitas mobile
+    videoElement.style.width = '100%';
     eggContainer.appendChild(videoElement); // Tambahkan elemen video ke kontainer
 
     // Tombol tangkap gambar
@@ -98,8 +101,8 @@ function takePhoto() {
     captureButton.onclick = () => captureImage(videoElement);
     switchCameraButton.onclick = () => switchCamera(videoElement);
     backButton.onclick = () => {
-        stopVideoStream();
-        resetToEggAnimation();
+        stopVideoStream(); // Hentikan kamera
+        resetToEggAnimation(); // Kembali ke tampilan awal
     };
 
     // Akses kamera
@@ -108,13 +111,13 @@ function takePhoto() {
 
 // Fungsi untuk memulai kamera
 async function startCamera(videoElement) {
-    stopVideoStream(); // Hentikan stream sebelumnya jika ada
+    stopVideoStream(); // Pastikan stream lama dihentikan
     try {
         videoStream = await navigator.mediaDevices.getUserMedia({
             video: { facingMode: usingBackCamera ? 'environment' : 'user' },
         });
         videoElement.srcObject = videoStream;
-        videoElement.play();
+        videoElement.onloadedmetadata = () => videoElement.play();
     } catch (error) {
         console.error('Error accessing camera:', error);
         alert('Tidak dapat mengakses kamera. Pastikan izin kamera diaktifkan.');
@@ -136,7 +139,7 @@ function captureImage(videoElement) {
     const context = canvas.getContext('2d');
     context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
 
-    stopVideoStream(); // Hentikan stream kamera
+    stopVideoStream(); // Hentikan kamera
 
     displaySelectedImage(canvas.toDataURL('image/png')); // Tampilkan gambar hasil tangkapan
     updateButtonsAfterImage(); // Perbarui tombol setelah gambar ditangkap
@@ -145,8 +148,8 @@ function captureImage(videoElement) {
 // Fungsi untuk menghentikan stream video
 function stopVideoStream() {
     if (videoStream) {
-        videoStream.getTracks().forEach((track) => track.stop());
-        videoStream = null;
+        videoStream.getTracks().forEach((track) => track.stop()); // Hentikan semua stream aktif
+        videoStream = null; // Reset stream ke null
     }
 }
 
@@ -158,9 +161,10 @@ function displaySelectedImage(imageSrc) {
     img.style.height = '130px';
 
     const eggContainer = document.querySelector('.image-container');
-    eggContainer.innerHTML = '';
-    eggContainer.appendChild(img);
+    eggContainer.innerHTML = ''; // Hapus video
+    eggContainer.appendChild(img); // Tampilkan gambar
 }
+
 
 
 
