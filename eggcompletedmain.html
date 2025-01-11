@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ambil Foto</title>
+    <link rel="stylesheet" href="eggcompleted.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Header Section -->
+      <h1>Aplikasi Pendeteksi</h1>
+      <h3>Kesegaran telur</h3>
+
+      <!-- Animated Egg Section -->
+      <div class="image-container">
+        <div class="egg"></div>
+        <!-- Egg animation -->
+        <div class="egg-shadow"></div>
+        <!-- Shadow beneath the egg -->
+      </div>
+
+      <!-- Buttons Section -->
+      <div class="button-container">
+        <button class="btn green-btn" onclick="takePhoto()">Ambil Foto</button>
+        <button class="btn yellow-btn" onclick="chooseFromGallery()">Pilih dari Galeri</button>
+      </div>
+    </div>
+
+    <script src="eggcompleted.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+  </body>
+</html>
