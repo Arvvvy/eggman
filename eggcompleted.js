@@ -63,60 +63,43 @@ function initializeButtons() {
 }
 
 // Fungsi untuk membuka kamera dan mengambil foto
+// Fungsi untuk membuka kamera dan mengambil foto
 function takePhoto() {
     const videoElement = document.createElement('video');
     const eggContainer = document.querySelector('.image-container');
-    eggContainer.innerHTML = '';
-    eggContainer.appendChild(videoElement);
+    eggContainer.innerHTML = ''; // Kosongkan kontainer gambar
+    eggContainer.appendChild(videoElement); // Tambahkan elemen video ke kontainer
 
+    // Meminta akses ke kamera
     navigator.mediaDevices
-        .getUserMedia({ video: true })
-        .then((stream) => {
-            videoElement.srcObject = stream;
-            videoElement.play();
-            setTimeout(() => {
-                captureImage(videoElement, stream);
-                updateButtonsAfterImage();
-            }, 3000);
-        })
-        .catch((error) => {
-            console.error('Error accessing camera:', error);
-            alert('Tidak dapat mengakses kamera');
-        });
-}
-
-// Fungsi untuk menangkap gambar dari video
-function takePhoto() {
-    const videoElement = document.createElement('video');
-    const eggContainer = document.querySelector('.image-container');
-    eggContainer.innerHTML = '';
-    eggContainer.appendChild(videoElement);
-
-    navigator.mediaDevices
-        .getUserMedia({ video: true })
+        .getUserMedia({ video: { facingMode: 'environment' } }) // Gunakan kamera belakang jika tersedia
         .then((stream) => {
             videoElement.srcObject = stream;
             videoElement.play();
 
+            // Tambahkan tombol "Tangkap Gambar"
             const captureButton = document.createElement('button');
             captureButton.textContent = 'Tangkap Gambar';
-            captureButton.classList.add('capture-btn'); // Tambahkan kelas ini
+            captureButton.classList.add('capture-btn');
             captureButton.onclick = () => captureImage(videoElement, stream);
             eggContainer.appendChild(captureButton);
 
-            // Buat tombol "Kembali"
+            // Tambahkan tombol "Kembali"
             const backButton = document.createElement('button');
             backButton.textContent = 'Kembali';
             backButton.classList.add('back-btn');
-            backButton.onclick = resetToEggAnimation;
+            backButton.onclick = () => {
+                stream.getTracks().forEach((track) => track.stop()); // Hentikan stream saat kembali
+                resetToEggAnimation();
+            };
             eggContainer.appendChild(backButton);
-
         })
         .catch((error) => {
             console.error('Error accessing camera:', error);
-            alert('Tidak dapat mengakses kamera');
+            alert('Tidak dapat mengakses kamera. Pastikan izin kamera diaktifkan.');
         });
 }
+
 
 
 async function captureImage(videoElement, stream) {
