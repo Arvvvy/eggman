@@ -64,41 +64,28 @@ function initializeButtons() {
 
 // Fungsi untuk membuka kamera dan mengambil foto
 // Fungsi untuk membuka kamera dan mengambil foto
+// Fungsi untuk membuka kamera perangkat dan mengambil foto
 function takePhoto() {
-    const videoElement = document.createElement('video');
-    const eggContainer = document.querySelector('.image-container');
-    eggContainer.innerHTML = ''; // Kosongkan kontainer gambar
-    eggContainer.appendChild(videoElement); // Tambahkan elemen video ke kontainer
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*';
+    fileInput.capture = 'environment'; // Gunakan kamera belakang (jika tersedia)
 
-    // Meminta akses ke kamera
-    navigator.mediaDevices
-        .getUserMedia({ video: { facingMode: 'environment' } }) // Gunakan kamera belakang jika tersedia
-        .then((stream) => {
-            videoElement.srcObject = stream;
-            videoElement.play();
-
-            // Tambahkan tombol "Tangkap Gambar"
-            const captureButton = document.createElement('button');
-            captureButton.textContent = 'Tangkap Gambar';
-            captureButton.classList.add('capture-btn');
-            captureButton.onclick = () => captureImage(videoElement, stream);
-            eggContainer.appendChild(captureButton);
-
-            // Tambahkan tombol "Kembali"
-            const backButton = document.createElement('button');
-            backButton.textContent = 'Kembali';
-            backButton.classList.add('back-btn');
-            backButton.onclick = () => {
-                stream.getTracks().forEach((track) => track.stop()); // Hentikan stream saat kembali
-                resetToEggAnimation();
+    fileInput.onchange = function (event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                displaySelectedImage(e.target.result); // Tampilkan gambar di kontainer
+                updateButtonsAfterImage(); // Perbarui tombol setelah gambar dipilih
             };
-            eggContainer.appendChild(backButton);
-        })
-        .catch((error) => {
-            console.error('Error accessing camera:', error);
-            alert('Tidak dapat mengakses kamera. Pastikan izin kamera diaktifkan.');
-        });
+            reader.readAsDataURL(file);
+        }
+    };
+
+    fileInput.click(); // Simulasikan klik untuk membuka kamera
 }
+
 
 
 
