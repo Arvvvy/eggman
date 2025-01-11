@@ -1,0 +1,66 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hasil Deteksi Kesegaran Telur</title>
+    <link rel="stylesheet" href="eggcompleted.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Hasil Deteksi Telur</h1>
+
+        <!-- Centered Content Wrapper -->
+        <div class="result-content">
+            <!-- Loading Spinner -->
+            <div id="loading-spinner" class="loading-spinner"></div>
+            
+            <!-- Placeholder for Egg Animation (initially hidden) -->
+            <div id="egg-animation-container" style="display: none;"></div>
+            
+            <!-- Result Text (initially hidden) -->
+            <h3 id="result-text" style="display: none;">Memuat hasil...</h3>
+            
+            <!-- Back Button (initially hidden) -->
+            <button onclick="window.location.href='index.html'" class="btn green-btn" id="back-button" style="display: none;">Kembali</button>
+        </div>
+    </div>
+
+    <script>
+        // Function to get query parameters from the URL
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        // Display the result and animation on page load
+        document.addEventListener("DOMContentLoaded", () => {
+            const result = getQueryParam('result'); // Get result from URL
+            const resultText = document.getElementById('result-text');
+            const eggContainer = document.getElementById('egg-animation-container');
+            const loadingSpinner = document.getElementById('loading-spinner');
+            const backButton = document.getElementById('back-button');
+
+            // Simulate loading delay
+            setTimeout(() => {
+                loadingSpinner.style.display = 'none'; // Hide loading spinner
+                resultText.style.display = 'block';    // Show result text
+                eggContainer.style.display = 'block';  // Show egg animation
+                backButton.style.display = 'block';    // Show back button
+
+                if (result) {
+                    resultText.innerText = `Telur ${result}`;
+                    
+                    // Choose animation based on result
+                    const eggDiv = document.createElement('div');
+                    eggDiv.classList.add(result === 'segar' ? 'shiny-egg' : 'moldy-egg');
+                    eggContainer.appendChild(eggDiv);
+                } else {
+                    resultText.innerText = 'Tidak ada hasil ditemukan';
+                }
+            }, 2000); // Set delay time in milliseconds (e.g., 2000 ms = 2 seconds)
+        });
+    </script>
+</body>
+</html>

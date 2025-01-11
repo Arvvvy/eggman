@@ -1,0 +1,303 @@
+/* General Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+body {
+    background: linear-gradient(180deg, rgba(194, 232, 242, 1) 0%, rgba(252, 250, 245, 1) 100%);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    text-align: center;
+}
+
+/* Header Section */
+h1 {
+    font-size: 36px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+h3 {
+    font-size: 18px;
+    color: #777;
+    margin-bottom: 30px;
+}
+
+/* Egg/Image Section */
+.image-container {
+    display: flex;
+    justify-content: center;   /* Horizontal centering */
+    align-items: center;       /* Vertical centering */
+    width: 100px;
+    height: 130px;
+    margin: 0 auto;            /* Ensure the container itself is centered */
+    position: relative;
+    margin-bottom: 30px; /* Increase the space between the image and buttons */
+}
+
+/* Default animated egg */
+.egg {
+    width: 100px;
+    height: 130px;
+    background-color: #f1f1f1;
+    border-radius: 50% 50% 40% 40%;
+    position: relative;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* Light shadow */
+    animation: idle 1s infinite alternate;
+}
+
+/* Shadow beneath the egg */
+.egg-shadow {
+    position: absolute;
+    bottom: 10px;
+    width: 80px;
+    height: 15px;
+    background-color: rgba(0, 0, 0, 0.15);
+    border-radius: 50%;
+    filter: blur(3px);
+    z-index: -1; /* Behind the egg */
+    animation: shadow-idle 1s infinite alternate;
+}
+
+/* Style for the loaded image */
+.image-container img {
+    width: 100px; /* Match the egg width */
+    height: 130px;
+    object-fit: cover; /* Ensure the image fits well within the container */
+    border-radius: 10px; /* Slight rounding for a cleaner look */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2); /* Add shadow for consistency */
+}
+
+/* Idle animation (slight bobbing effect for the egg) */
+@keyframes idle {
+    0% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(-10px);
+    }
+}
+
+/* Shadow idle animation */
+@keyframes shadow-idle {
+    0% {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(0.9) translateY(5px);
+        opacity: 0.8;
+    }
+}
+
+/* Buttons Section */
+.button-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.btn {
+    padding: 15px 30px;
+    border: none;
+    border-radius: 50px;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.green-btn {
+    background-color: #84e9d9;
+    color: #fff;
+}
+
+.yellow-btn {
+    background-color: #ffe19c;
+    color: #fff;
+}
+
+.btn:hover {
+    opacity: 0.9;
+    color: black;
+}
+
+
+
+/*LOADING*/
+/* Centered Content Wrapper */
+.result-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Loading Spinner */
+.loading-spinner {
+    border: 8px solid #f3f3f3; /* Light grey */
+    border-top: 8px solid #84e9d9; /* Green color */
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+    margin: 20px auto; /* Center the spinner */
+}
+
+/* Spinner Animation */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Egg Animation Container */
+#egg-animation-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+}
+
+/* Styles for Egg Animations (same as previously defined) */
+.shiny-egg, .moldy-egg {
+    width: 80px;
+    height: 100px;
+    background-color: #ffffff;
+    border-radius: 50% 50% 45% 45%;
+    position: relative;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Additional animations for shiny-egg and moldy-egg as before */
+
+
+
+
+
+/*ANIMASI HASIL*/
+/* New Egg Animation Container */
+/* Egg Animation Container */
+#egg-animation-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+/* Fresh (Sparkling) Egg Animation */
+.shiny-egg {
+    width: 80px;
+    height: 100px;
+    background-color: #ffffff;
+    border-radius: 50% 50% 45% 45%;
+    position: relative;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    animation: shine 2s infinite alternate;
+}
+
+/* Sparkling Effect for Fresh Egg */
+.shiny-egg::before, .shiny-egg::after {
+    content: '';
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: rgba(255, 223, 0, 0.7); /* Golden sparkle */
+    border-radius: 50%;
+    opacity: 0;
+    animation: sparkle 1s infinite alternate;
+}
+
+/* Sparkling positions */
+.shiny-egg::before {
+    top: 20%;
+    left: 20%;
+    animation-delay: 0.2s;
+}
+.shiny-egg::after {
+    top: 60%;
+    right: 25%;
+    animation-delay: 0.6s;
+}
+
+/* Moldy (White Egg with Green Mold) Animation */
+.moldy-egg {
+    width: 80px;
+    height: 100px;
+    background-color: #ffffff;
+    border-radius: 50% 50% 45% 45%;
+    position: relative;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.4);
+    animation: mold 3s infinite alternate;
+}
+
+/* Moldy Spots */
+.moldy-egg::before, .moldy-egg::after {
+    content: '';
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    background-color: rgba(34, 139, 34, 0.6); /* Green mold */
+    border-radius: 50%;
+}
+
+/* Moldy positions */
+.moldy-egg::before {
+    top: 30%;
+    left: 25%;
+    animation: moldSpot 3s infinite alternate;
+}
+.moldy-egg::after {
+    top: 65%;
+    right: 20%;
+    animation: moldSpot 3s infinite alternate-reverse;
+}
+
+/* Keyframes for Sparkle Animation */
+@keyframes sparkle {
+    0% {
+        transform: scale(0.5);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1.2);
+        opacity: 1;
+    }
+}
+
+/* Keyframes for Shiny Egg Bobbing */
+@keyframes shine {
+    0% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(-5px);
+    }
+}
+
+/* Keyframes for Moldy Animation */
+@keyframes mold {
+    0% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(3px);
+    }
+}
+
+/* Keyframes for Mold Spot Pulsing */
+@keyframes moldSpot {
+    0% {
+        transform: scale(1);
+        opacity: 0.7;
+    }
+    100% {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+}
