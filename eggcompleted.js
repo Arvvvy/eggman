@@ -67,24 +67,32 @@ function initializeButtons() {
 // Fungsi untuk membuka kamera perangkat dan mengambil foto
 // Fungsi untuk membuka kamera bawaan perangkat
 function takePhoto() {
+    // Buat elemen input file dengan atribut capture
     const fileInput = document.createElement('input');
     fileInput.type = 'file';
-    fileInput.accept = 'image/*;capture=camera'; // Gunakan atribut capture untuk akses kamera bawaan
+    fileInput.accept = 'image/*';
+    fileInput.capture = 'environment'; // Menggunakan kamera belakang jika tersedia (HP)
 
+    // Event ketika pengguna memilih atau mengambil gambar
     fileInput.onchange = function (event) {
         const file = event.target.files[0];
         if (file) {
             const reader = new FileReader();
             reader.onload = function (e) {
-                displaySelectedImage(e.target.result); // Tampilkan gambar di kontainer
-                updateButtonsAfterImage(); // Ubah tombol setelah gambar ditampilkan
+                displaySelectedImage(e.target.result); // Menampilkan gambar
+                updateButtonsAfterImage(); // Update tombol setelah gambar diambil
             };
             reader.readAsDataURL(file);
+        } else {
+            console.error('Tidak ada file yang dipilih!');
+            alert('Gagal mengambil gambar!');
         }
     };
 
-    fileInput.click(); // Buka input file (kamera)
+    // Trigger input file
+    fileInput.click();
 }
+
 
 
 
