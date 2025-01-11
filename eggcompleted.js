@@ -66,101 +66,31 @@ function initializeButtons() {
 // Fungsi untuk membuka kamera dan mengambil foto
 // Fungsi untuk membuka kamera perangkat dan mengambil foto
 // Fungsi untuk membuka kamera bawaan perangkat
-let videoStream = null;
-let usingBackCamera = true; // Default menggunakan kamera belakang
-
-// Fungsi untuk membuka kamera dan menampilkan kontrol tombol
 function takePhoto() {
-    const eggContainer = document.querySelector('.image-container');
-    eggContainer.innerHTML = ''; // Kosongkan kontainer gambar
+    // Buat elemen input file dengan atribut capture
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*';
+    fileInput.capture = 'environment'; // Menggunakan kamera belakang jika tersedia (HP)
 
-    const videoElement = document.createElement('video');
-    eggContainer.appendChild(videoElement); // Tambahkan elemen video ke kontainer
-
-    // Tombol tangkap gambar
-    const captureButton = document.createElement('button');
-    captureButton.textContent = 'Tangkap Gambar';
-    captureButton.classList.add('capture-btn');
-    eggContainer.appendChild(captureButton);
-
-    // Tombol ganti kamera
-    const switchCameraButton = document.createElement('button');
-    switchCameraButton.textContent = 'Ganti Kamera';
-    switchCameraButton.classList.add('switch-camera-btn');
-    eggContainer.appendChild(switchCameraButton);
-
-    // Tombol kembali
-    const backButton = document.createElement('button');
-    backButton.textContent = 'Kembali';
-    backButton.classList.add('back-btn');
-    eggContainer.appendChild(backButton);
-
-    // Event listeners untuk tombol
-    captureButton.onclick = () => captureImage(videoElement);
-    switchCameraButton.onclick = () => switchCamera(videoElement);
-    backButton.onclick = () => {
-        stopVideoStream();
-        resetToEggAnimation();
+    // Event ketika pengguna memilih atau mengambil gambar
+    fileInput.onchange = function (event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                displaySelectedImage(e.target.result); // Menampilkan gambar
+                updateButtonsAfterImage(); // Update tombol setelah gambar diambil
+            };
+            reader.readAsDataURL(file);
+        } else {
+            console.error('Tidak ada file yang dipilih!');
+            alert('Gagal mengambil gambar!');
+        }
     };
 
-    // Akses kamera
-    startCamera(videoElement);
-}
-
-// Fungsi untuk memulai kamera
-async function startCamera(videoElement) {
-    stopVideoStream(); // Hentikan stream sebelumnya jika ada
-    try {
-        videoStream = await navigator.mediaDevices.getUserMedia({
-            video: { facingMode: usingBackCamera ? 'environment' : 'user' },
-        });
-        videoElement.srcObject = videoStream;
-        videoElement.play();
-    } catch (error) {
-        console.error('Error accessing camera:', error);
-        alert('Tidak dapat mengakses kamera. Pastikan izin kamera diaktifkan.');
-    }
-}
-
-// Fungsi untuk mengganti kamera
-function switchCamera(videoElement) {
-    usingBackCamera = !usingBackCamera; // Ganti antara kamera depan dan belakang
-    startCamera(videoElement); // Restart kamera dengan mode baru
-}
-
-// Fungsi untuk menangkap gambar dari video
-function captureImage(videoElement) {
-    const canvas = document.createElement('canvas');
-    canvas.width = videoElement.videoWidth;
-    canvas.height = videoElement.videoHeight;
-
-    const context = canvas.getContext('2d');
-    context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-
-    stopVideoStream(); // Hentikan stream kamera
-
-    displaySelectedImage(canvas.toDataURL('image/png')); // Tampilkan gambar hasil tangkapan
-    updateButtonsAfterImage(); // Perbarui tombol setelah gambar ditangkap
-}
-
-// Fungsi untuk menghentikan stream video
-function stopVideoStream() {
-    if (videoStream) {
-        videoStream.getTracks().forEach((track) => track.stop());
-        videoStream = null;
-    }
-}
-
-// Fungsi untuk menampilkan gambar yang ditangkap
-function displaySelectedImage(imageSrc) {
-    const img = document.createElement('img');
-    img.src = imageSrc;
-    img.style.width = '100px';
-    img.style.height = '130px';
-
-    const eggContainer = document.querySelector('.image-container');
-    eggContainer.innerHTML = '';
-    eggContainer.appendChild(img);
+    // Trigger input file
+    fileInput.click();
 }
 
 
